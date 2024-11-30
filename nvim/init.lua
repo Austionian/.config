@@ -792,7 +792,7 @@ require('lazy').setup({
           append_args = {
             -- Orders tailwind classes
             -- TODO: make sure this works in any repo
-            '--plugin=../../Library/Application Support/fnm/node-versions/v16.15.0/installation/lib/node_modules/prettier-plugin-tailwindcss/dist/index.mjs',
+            -- '--plugin=../../Library/Application Support/fnm/node-versions/v22.9.0/installation/lib/node_modules/prettier-plugin-tailwindcss/dist/index.mjs',
           },
         },
       },
