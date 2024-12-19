@@ -784,7 +784,7 @@ require('lazy').setup({
         json = { 'prettier' },
         yaml = { 'prettier' },
         markdown = { 'prettier' },
-        rust = { 'rustfmt', lsp_format = 'fallback' },
+        rust = { 'rustfmt' },
         toml = { 'taplo' },
       },
       formatters = {
@@ -917,38 +917,54 @@ require('lazy').setup({
       }
     end,
   },
-  -- {
-  --   'wincent/base16-nvim',
-  --   lazy = false, -- load at start
-  --   priority = 1000, -- load first
-  --   config = function()
-  --     vim.cmd [[colorscheme base16-gruvbox-dark-hard]]
-  --     vim.o.background = 'dark'
-  --     -- Make it clearly visible which argument we're at.
-  --     -- XXX
-  --     -- Would be nice to customize the highlighting of warnings and the like to make
-  --     -- them less glaring. But alas
-  --     -- https://github.com/nvim-lua/lsp_extensions.nvim/issues/21
-  --     -- call Base16hi("CocHintSign", g:base16_gui03, "", g:base16_cterm03, "", "", "")
-  --   end,
-  -- },
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'rebelot/kanagawa.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'kanagawa'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
+  {
+    'arturgoms/moonbow.nvim',
+    -- 'morhetz/gruvbox',
+    lazy = false, -- load at start
+    priority = 1000, -- load first
+    config = function()
+      -- vim.cmd [[let g:gruvbox_contrast_dark = "hard"]]
+      -- vim.cmd [[let g:gruvbox_transparent_bg = 1]]
+      vim.cmd [[colorscheme moonbow]]
+      vim.o.background = 'dark'
+      -- Make it clearly visible which argument we're at.
+      -- XXX
+      -- Would be nice to customize the highlighting of warnings and the like to make
+      -- them less glaring. But alas
+      -- https://github.com/nvim-lua/lsp_extensions.nvim/issues/21
+      -- call Base16hi("CocHintSign", g:base16_gui03, "", g:base16_cterm03, "", "", "")
     end,
   },
+  -- { -- You can easily change to a different colorscheme.
+  --   -- Change the name of the colorscheme plugin below, and then
+  --   -- change the command in the config to whatever the name of that colorscheme is.
+  --   --
+  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --   'rebelot/kanagawa.nvim',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   init = function()
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'kanagawa'
+  --
+  --     -- You can configure highlights by doing something like:
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
+  -- {
+  --   'projekt0n/github-nvim-theme',
+  --   name = 'github-theme',
+  --   lazy = false, -- make sure we load this during startup if it is your main colorscheme
+  --   priority = 1000, -- make sure to load this before all the other start plugins
+  --   config = function()
+  --     require('github-theme').setup {
+  --       -- ...
+  --     }
+  --
+  --     vim.cmd 'colorscheme github_dark_tritanopia'
+  --   end,
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
