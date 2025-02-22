@@ -126,6 +126,9 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('n', 'j', 'gj')
 vim.keymap.set('n', 'k', 'gk')
 
+-- Open new tmux window
+vim.keymap.set('n', '<C-f>', '<cmd>!tmux neww tmux-sessionizer<CR>')
+
 -- handy keymap for replacing up to next _ (like in variable names)
 vim.keymap.set('n', '<leader>m', 'ct_')
 
@@ -595,6 +598,8 @@ require('lazy').setup({
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+          map('grr', vim.lsp.buf.references, 'Go to references')
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
