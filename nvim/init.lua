@@ -170,10 +170,16 @@ vim.keymap.set('n', '<leader><leader>', '<c-^>', { desc = 'toggle back to last b
 -- Toggle to the file tree
 vim.keymap.set('n', '<leader>pe', ':Ex<CR>', { desc = 'Toggle the file tree' })
 
+-- Paste without losing the current register
 vim.keymap.set('v', '<leader>p', '"_dP', { desc = 'paste without losing the current register' })
 
-vim.keymap.set('v', '<leader>y', '"+y')
-vim.keymap.set('n', '<leader>y', '"+y')
+-- Delete without losing the current register
+vim.keymap.set('v', '<leader>d', '"_d', { desc = '[D]elete without losing the current register' })
+vim.keymap.set('n', '<leader>d', '"_d', { desc = '[D]elete without losing the current register' })
+
+-- Copy to system register too
+vim.keymap.set('v', '<leader>y', '"+y', { desc = '[Y]ank to system register' })
+vim.keymap.set('n', '<leader>y', '"+y', { desc = '[Y]ank to system register' })
 
 -- Easy Dragging
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
@@ -195,9 +201,6 @@ vim.keymap.set('n', 'g*', 'g*zz', { silent = true })
 -- Open Undo Tree
 vim.keymap.set('n', '<leader>u', '<cmd>UndotreeToggle<cr>', { desc = 'toggles the undo tree' })
 
--- Paste without losing the current register
-vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'paste without losing the current register' })
-
 -- Apply a macro to the visually selected lines
 vim.keymap.set('x', '@', '":norm @" . getcharstr() . "<cr>"', { expr = true })
 
@@ -211,6 +214,16 @@ vim.keymap.set('n', '<leader>w', '<cmd>w<cr>', { desc = 'quick save' })
 vim.keymap.set('', 'H', '^')
 vim.keymap.set('', 'L', '$')
 
+-- start a terminal at the bottom
+vim.keymap.set('n', '<leader>st', function()
+  vim.cmd.vnew()
+  vim.cmd.term()
+  vim.cmd.wincmd 'J'
+  vim.api.nvim_win_set_height(0, 15)
+end)
+
+--
+vim.keymap.set('x', '<leader>.', "q:<UP>I'<,'><Esc>$", { desc = 'select previous cmd' })
 -------------------------------------------------------------------------------
 --
 -- autocommands
