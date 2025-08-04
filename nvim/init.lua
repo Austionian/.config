@@ -938,17 +938,38 @@ require('lazy').setup({
       }
     end,
   },
+  -- {
+  --   -- 'arturgoms/moonbow.nvim',
+  --   -- 'morhetz/gruvbox',
+  --   lazy = false, -- load at start
+  --   priority = 1000, -- load first
+  --   config = function()
+  --     -- vim.cmd [[let g:gruvbox_contrast_dark = "hard"]]
+  --     -- vim.cmd [[let g:gruvbox_transparent_bg = 1]]
+  --     vim.cmd [[colorscheme moonbow]]
+  --     vim.o.background = 'dark'
+  --     -- Make it clearly visible which argument we're at.
+  --     -- XXX
+  --     -- Would be nice to customize the highlighting of warnings and the like to make
+  --     -- them less glaring. But alas
+  --     -- https://github.com/nvim-lua/lsp_extensions.nvim/issues/21
+  --     -- call Base16hi("CocHintSign", g:base16_gui03, "", g:base16_cterm03, "", "", "")
+  --   end,
+  -- },
   {
-    'arturgoms/moonbow.nvim',
-    -- 'morhetz/gruvbox',
+    'wincent/base16-nvim',
     lazy = false, -- load at start
     priority = 1000, -- load first
     config = function()
-      -- vim.cmd [[let g:gruvbox_contrast_dark = "hard"]]
-      -- vim.cmd [[let g:gruvbox_transparent_bg = 1]]
-      vim.cmd [[colorscheme moonbow]]
+      vim.cmd [[colorscheme gruvbox-dark-hard]]
       vim.o.background = 'dark'
+      -- XXX: hi Normal ctermbg=NONE
+      -- Make comments more prominent -- they are important.
+      local bools = vim.api.nvim_get_hl(0, { name = 'Boolean' })
+      vim.api.nvim_set_hl(0, 'Comment', bools)
       -- Make it clearly visible which argument we're at.
+      local marked = vim.api.nvim_get_hl(0, { name = 'PMenu' })
+      vim.api.nvim_set_hl(0, 'LspSignatureActiveParameter', { fg = marked.fg, bg = marked.bg, ctermfg = marked.ctermfg, ctermbg = marked.ctermbg, bold = true })
       -- XXX
       -- Would be nice to customize the highlighting of warnings and the like to make
       -- them less glaring. But alas
@@ -956,6 +977,25 @@ require('lazy').setup({
       -- call Base16hi("CocHintSign", g:base16_gui03, "", g:base16_cterm03, "", "", "")
     end,
   },
+  -- {
+  --   'nyoom-engineering/oxocarbon.nvim',
+  --   -- Add in any other configuration;
+  --   --   event = foo,
+  --   --   config = bar
+  --   --   end,
+  --   config = function()
+  --     -- vim.cmd [[let g:gruvbox_contrast_dark = "hard"]]
+  --     -- vim.cmd [[let g:gruvbox_transparent_bg = 1]]
+  --     vim.cmd [[colorscheme oxocarbon]]
+  --     vim.o.background = 'dark'
+  --     -- Make it clearly visible which argument we're at.
+  --     -- XXX
+  --     -- Would be nice to customize the highlighting of warnings and the like to make
+  --     -- them less glaring. But alas
+  --     -- https://github.com/nvim-lua/lsp_extensions.nvim/issues/21
+  --     -- call Base16hi("CocHintSign", g:base16_gui03, "", g:base16_cterm03, "", "", "")
+  --   end,
+  -- },
   -- { -- You can easily change to a different colorscheme.
   --   -- Change the name of the colorscheme plugin below, and then
   --   -- change the command in the config to whatever the name of that colorscheme is.
@@ -1123,46 +1163,46 @@ require('lazy').setup({
       }
     end,
   },
-  {
-    'yetone/avante.nvim',
-    event = 'VeryLazy',
-    version = false, -- Never set this value to "*"! Never!
-    opts = {
-      provider = 'openai',
-      openai = {
-        endpoint = 'http://ai.local:10000/',
-        timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
-        temperature = 0,
-        api_key_name = '',
-        disable_tools = true,
-        --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
-      },
-    },
-    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    build = 'make',
-    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'stevearc/dressing.nvim',
-      'nvim-lua/plenary.nvim',
-      'MunifTanjim/nui.nvim',
-      --- The below dependencies are optional,
-      'echasnovski/mini.pick', -- for file_selector provider mini.pick
-      'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
-      'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
-      'ibhagwan/fzf-lua', -- for file_selector provider fzf
-      'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
-      'zbirenbaum/copilot.lua', -- for providers='copilot'
-      {
-        -- Make sure to set this up properly if you have lazy=true
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = {
-          file_types = { 'markdown', 'Avante' },
-        },
-        ft = { 'markdown', 'Avante' },
-      },
-    },
-  },
+  -- {
+  --   'yetone/avante.nvim',
+  --   event = 'VeryLazy',
+  --   version = false, -- Never set this value to "*"! Never!
+  --   opts = {
+  --     provider = 'openai',
+  --     openai = {
+  --       endpoint = 'http://ai.local:10000/',
+  --       timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
+  --       temperature = 0,
+  --       api_key_name = '',
+  --       disable_tools = true,
+  --       --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+  --     },
+  --   },
+  --   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+  --   build = 'make',
+  --   -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+  --   dependencies = {
+  --     'nvim-treesitter/nvim-treesitter',
+  --     'stevearc/dressing.nvim',
+  --     'nvim-lua/plenary.nvim',
+  --     'MunifTanjim/nui.nvim',
+  --     --- The below dependencies are optional,
+  --     'echasnovski/mini.pick', -- for file_selector provider mini.pick
+  --     'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
+  --     'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
+  --     'ibhagwan/fzf-lua', -- for file_selector provider fzf
+  --     'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
+  --     'zbirenbaum/copilot.lua', -- for providers='copilot'
+  --     {
+  --       -- Make sure to set this up properly if you have lazy=true
+  --       'MeanderingProgrammer/render-markdown.nvim',
+  --       opts = {
+  --         file_types = { 'markdown', 'Avante' },
+  --       },
+  --       ft = { 'markdown', 'Avante' },
+  --     },
+  --   },
+  -- },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
