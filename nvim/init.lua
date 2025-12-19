@@ -530,7 +530,13 @@ require('lazy').setup({
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim', opts = {
+        notification = {
+          window = {
+            winblend = 0,
+          },
+        },
+      } },
 
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
@@ -723,14 +729,28 @@ require('lazy').setup({
         },
       }
 
+      vim.lsp.enable 'gleam'
+
+      -- Now setup those configurations
+      for name, config in pairs(servers) do
+        local config = config or {}
+        -- This handles overriding only values explicitly passed
+        -- by the server configuration above. Useful when disabling
+        -- certain features of an LSP (for example, turning off formatting for ts_ls)
+        config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, config.capabilities or {})
+        vim.lsp.config(name, config)
+      end
+
       -- Ensure the servers and tools above are installed
       --  To check the current status of installed tools and/or manually install
       --  other tools, you can run
       --    :Mason
       --
       --  You can press `g?` for help in this menu.
-      require('mason').setup()
-
+      --
+      -- `mason` had to be setup earlier: to configure its options see the
+      -- `dependencies` table for `nvim-lspconfig` above.
+      --
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
@@ -742,16 +762,8 @@ require('lazy').setup({
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
+        ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+        automatic_installation = false,
       }
     end,
   },
@@ -939,16 +951,163 @@ require('lazy').setup({
     end,
   },
   -- {
-  --   -- 'arturgoms/moonbow.nvim',
-  --   -- 'morhetz/gruvbox',
+  --   'ellisonleao/gruvbox.nvim',
+  --   priority = 1000, -- load first
+  --   lazy = false,
+  --   config = function()
+  --     require('gruvbox').setup {
+  --       terminal_colors = true, -- add neovim terminal colors
+  --       undercurl = true,
+  --       underline = true,
+  --       bold = true,
+  --       italic = {
+  --         strings = true,
+  --         emphasis = true,
+  --         comments = true,
+  --         operators = false,
+  --         folds = true,
+  --       },
+  --       strikethrough = true,
+  --       invert_selection = false,
+  --       invert_signs = false,
+  --       invert_tabline = false,
+  --       inverse = true, -- invert background for search, diffs, statuslines and errors
+  --       contrast = 'hard', -- can be "hard", "soft" or empty string
+  --       palette_overrides = {},
+  --       overrides = {},
+  --       dim_inactive = false,
+  --       transparent_mode = true,
+  --     }
+  --
+  --     vim.cmd.colorscheme 'gruvbox'
+  --   end,
+  -- },
+  {
+    'EdenEast/nightfox.nvim',
+    config = function()
+      require('nightfox').setup {
+        options = {
+          -- Compiled file's destination location
+          compile_path = vim.fn.stdpath 'cache' .. '/nightfox',
+          compile_file_suffix = '_compiled', -- Compiled file suffix
+          transparent = true, -- Disable setting background
+          terminal_colors = true, -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
+          dim_inactive = false, -- Non focused panes set to alternative background
+          module_default = true, -- Default enable value for modules
+          colorblind = {
+            enable = false, -- Enable colorblind support
+            simulate_only = false, -- Only show simulated colorblind colors and not diff shifted
+            severity = {
+              protan = 0, -- Severity [0,1] for protan (red)
+              deutan = 0, -- Severity [0,1] for deutan (green)
+              tritan = 0, -- Severity [0,1] for tritan (blue)
+            },
+          },
+          styles = { -- Style to be applied to different syntax groups
+            comments = 'italic', -- Value is any valid attr-list value `:help attr-list`
+            conditionals = 'NONE',
+            constants = 'bold',
+            functions = 'bold',
+            keywords = 'NONE',
+            numbers = 'NONE',
+            operators = 'NONE',
+            strings = 'NONE',
+            types = 'NONE',
+            variables = 'NONE',
+          },
+          inverse = { -- Inverse highlight for different types
+            match_paren = false,
+            visual = false,
+            search = false,
+          },
+          modules = { -- List of various plugins and additional options
+            -- ...
+          },
+        },
+        palettes = {},
+        specs = {},
+        groups = {},
+      }
+
+      vim.cmd 'colorscheme terafox'
+    end,
+  },
+  -- {
+  --   'folke/tokyonight.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     require('tokyonight').setup {
+  --       on_colors = function(colors) end,
+  --       transparent = true,
+  --       style = 'night',
+  --       on_highlights = function(hl, c)
+  --         -- set telescope-bg transparent
+  --         hl.TelescopeNormal = {
+  --           fg = c.fg_dark,
+  --         }
+  --         hl.TelescopeBorder = {
+  --           fg = c.bg_dark,
+  --         }
+  --         hl.TroubleNormal = {
+  --           fg = c.fg_dark,
+  --         }
+  --       end,
+  --     }
+  --     vim.cmd [[colorscheme tokyonight-night]]
+  --   end,
+  -- },
+  {
+    'folke/trouble.nvim',
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = 'Trouble',
+    keys = {
+      {
+        '<leader>xx',
+        '<cmd>Trouble diagnostics toggle<cr>',
+        desc = 'Diagnostics (Trouble)',
+      },
+      {
+        '<leader>xX',
+        '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
+        desc = 'Buffer Diagnostics (Trouble)',
+      },
+      {
+        '<leader>cs',
+        '<cmd>Trouble symbols toggle focus=false<cr>',
+        desc = 'Symbols (Trouble)',
+      },
+      {
+        '<leader>cl',
+        '<cmd>Trouble lsp toggle focus=false win.position=right<cr>',
+        desc = 'LSP Definitions / references / ... (Trouble)',
+      },
+      {
+        '<leader>xL',
+        '<cmd>Trouble loclist toggle<cr>',
+        desc = 'Location List (Trouble)',
+      },
+      {
+        '<leader>xQ',
+        '<cmd>Trouble qflist toggle<cr>',
+        desc = 'Quickfix List (Trouble)',
+      },
+    },
+  },
+  -- {
+  --   'wincent/base16-nvim',
   --   lazy = false, -- load at start
   --   priority = 1000, -- load first
   --   config = function()
-  --     -- vim.cmd [[let g:gruvbox_contrast_dark = "hard"]]
-  --     -- vim.cmd [[let g:gruvbox_transparent_bg = 1]]
-  --     vim.cmd [[colorscheme moonbow]]
+  --     vim.cmd [[colorscheme gruvbox-dark-hard]]
   --     vim.o.background = 'dark'
+  --     -- XXX: hi Normal ctermbg=NONE
+  --     -- Make comments more prominent -- they are important.
+  --     -- local bools = vim.api.nvim_get_hl(0, { name = 'Boolean' })
+  --     -- vim.api.nvim_set_hl(0, 'Comment', bools)
   --     -- Make it clearly visible which argument we're at.
+  --     local marked = vim.api.nvim_get_hl(0, { name = 'PMenu' })
+  --     vim.api.nvim_set_hl(0, 'LspSignatureActiveParameter', { fg = marked.fg, bg = marked.bg, ctermfg = marked.ctermfg, ctermbg = marked.ctermbg, bold = true })
   --     -- XXX
   --     -- Would be nice to customize the highlighting of warnings and the like to make
   --     -- them less glaring. But alas
@@ -956,27 +1115,6 @@ require('lazy').setup({
   --     -- call Base16hi("CocHintSign", g:base16_gui03, "", g:base16_cterm03, "", "", "")
   --   end,
   -- },
-  {
-    'wincent/base16-nvim',
-    lazy = false, -- load at start
-    priority = 1000, -- load first
-    config = function()
-      vim.cmd [[colorscheme gruvbox-dark-hard]]
-      vim.o.background = 'dark'
-      -- XXX: hi Normal ctermbg=NONE
-      -- Make comments more prominent -- they are important.
-      local bools = vim.api.nvim_get_hl(0, { name = 'Boolean' })
-      vim.api.nvim_set_hl(0, 'Comment', bools)
-      -- Make it clearly visible which argument we're at.
-      local marked = vim.api.nvim_get_hl(0, { name = 'PMenu' })
-      vim.api.nvim_set_hl(0, 'LspSignatureActiveParameter', { fg = marked.fg, bg = marked.bg, ctermfg = marked.ctermfg, ctermbg = marked.ctermbg, bold = true })
-      -- XXX
-      -- Would be nice to customize the highlighting of warnings and the like to make
-      -- them less glaring. But alas
-      -- https://github.com/nvim-lua/lsp_extensions.nvim/issues/21
-      -- call Base16hi("CocHintSign", g:base16_gui03, "", g:base16_cterm03, "", "", "")
-    end,
-  },
   -- {
   --   'nyoom-engineering/oxocarbon.nvim',
   --   -- Add in any other configuration;
@@ -1069,6 +1207,8 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    branch = 'master',
+    lazy = false,
     build = ':TSUpdate',
     dependencies = 'nvim-treesitter/nvim-treesitter-context',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
@@ -1090,6 +1230,7 @@ require('lazy').setup({
         'typescript',
         'javascript',
         'python',
+        'gleam',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
@@ -1146,6 +1287,8 @@ require('lazy').setup({
     dependencies = { { 'echasnovski/mini.icons', opts = {} } },
     config = function()
       require('oil').setup {
+        default_file_explorer = true,
+        delete_to_trash = true,
         columns = { 'icon' },
         view_options = {
           default_file_explorer = true,
@@ -1163,47 +1306,6 @@ require('lazy').setup({
       }
     end,
   },
-  -- {
-  --   'yetone/avante.nvim',
-  --   event = 'VeryLazy',
-  --   version = false, -- Never set this value to "*"! Never!
-  --   opts = {
-  --     provider = 'openai',
-  --     openai = {
-  --       endpoint = 'http://ai.local:10000/',
-  --       timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
-  --       temperature = 0,
-  --       api_key_name = '',
-  --       disable_tools = true,
-  --       --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
-  --     },
-  --   },
-  --   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-  --   build = 'make',
-  --   -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-  --   dependencies = {
-  --     'nvim-treesitter/nvim-treesitter',
-  --     'stevearc/dressing.nvim',
-  --     'nvim-lua/plenary.nvim',
-  --     'MunifTanjim/nui.nvim',
-  --     --- The below dependencies are optional,
-  --     'echasnovski/mini.pick', -- for file_selector provider mini.pick
-  --     'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
-  --     'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
-  --     'ibhagwan/fzf-lua', -- for file_selector provider fzf
-  --     'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
-  --     'zbirenbaum/copilot.lua', -- for providers='copilot'
-  --     {
-  --       -- Make sure to set this up properly if you have lazy=true
-  --       'MeanderingProgrammer/render-markdown.nvim',
-  --       opts = {
-  --         file_types = { 'markdown', 'Avante' },
-  --       },
-  --       ft = { 'markdown', 'Avante' },
-  --     },
-  --   },
-  -- },
-
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.

@@ -1,7 +1,9 @@
 background = 111
+background-blur = true
 
-font-family = Berkeley Mono
-theme = GruvboxDarkHard
+theme = Terafox
 
-background-opacity = .91
+background-opacity = .9
 window-theme = ghostty
+
+app-notifications = no-clipboard-copy
