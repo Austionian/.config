@@ -8,7 +8,7 @@
         {
           "name": "OpenAI gpt-oss 20B",
           "id": "openai/gpt-oss-20b",
-          "context_window": 23899,
+          "context_window": 10713,
           "default_max_tokens": 20000
         },
         {
