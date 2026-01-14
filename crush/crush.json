@@ -10,6 +10,12 @@
           "id": "openai/gpt-oss-20b",
           "context_window": 23899,
           "default_max_tokens": 20000
+        },
+        {
+          "name": "ministral-3-14b-reasoning",
+          "id": "mistralai/ministral-3-14b-reasoning",
+          "context_window": 23899,
+          "default_max_tokens": 20000
         }
       ]
     }
